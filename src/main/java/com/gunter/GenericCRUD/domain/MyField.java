@@ -13,5 +13,5 @@ public class MyField {
     private String name;
     private String type;
     private boolean nullable;
-    private String description;
+    private String description = "";
 }
