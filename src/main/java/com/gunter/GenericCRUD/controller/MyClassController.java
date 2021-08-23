@@ -2,6 +2,8 @@ package com.gunter.GenericCRUD.controller;
 
 import com.gunter.GenericCRUD.domain.MyClass;
 import com.gunter.GenericCRUD.domain.MyField;
+import com.gunter.GenericCRUD.repository.MyClassRepository;
+import com.gunter.GenericCRUD.service.MyClassInstanced;
 import com.gunter.GenericCRUD.service.MyClassService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,12 @@ public class MyClassController {
 
     @Autowired
     private MyClassService myClassService;
+
+
+    @Autowired
+    public MyClassController(MyClassRepository myClassRepository){
+        MyClassInstanced.init(myClassRepository);
+    }
 
     @GetMapping
     public ResponseEntity<List<MyClass>> getAll(){
