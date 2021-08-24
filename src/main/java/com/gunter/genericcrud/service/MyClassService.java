@@ -17,6 +17,9 @@ public class MyClassService {
     @Autowired
     private MyClassRepository myClassRepository;
 
+    @Autowired
+    private ValidateClassesService validateClassesService;
+
     public List<MyClass> getAll(){
         return myClassRepository.findAll();
     }
@@ -27,17 +30,14 @@ public class MyClassService {
         return myClass;
     }
 
-    public MyClass insert(MyClass myClass){
+    public MyClass insertOrUpdate(MyClass myClass){
+        validateClassesService.validateTypesAndStructure(myClass);
         myClass = myClassRepository.save(myClass);
         MyClassInstanced.init(myClassRepository);
         return myClass;
     }
 
-    public MyClass update(MyClass myClass){
-        myClass = myClassRepository.save(myClass);
-        MyClassInstanced.init(myClassRepository);
-        return myClass;
-    }
+
 
     public void delete(String name){
         myClassRepository.deleteById(name);

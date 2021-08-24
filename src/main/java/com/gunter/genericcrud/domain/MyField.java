@@ -20,4 +20,7 @@ public class MyField {
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<MyField> fields;
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private String listType;
 }

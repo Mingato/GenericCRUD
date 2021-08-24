@@ -37,7 +37,7 @@ public class MyClassController {
     @PostMapping("/{name}")
     public ResponseEntity<MyClass> insert(@PathVariable("name") String name, @RequestBody MyClass myClass){
         myClass.setName(name);
-        return ResponseEntity.ok(myClassService.insert(myClass));
+        return ResponseEntity.ok(myClassService.insertOrUpdate(myClass));
     }
     @PostMapping("/{name}/fields")
     public ResponseEntity<MyClass> addFields(@PathVariable("name") String name, @RequestBody List<MyField> fields){
@@ -47,7 +47,7 @@ public class MyClassController {
     @PutMapping("/{name}")
     public ResponseEntity<MyClass> update(@PathVariable("name") String name, @RequestBody MyClass myClass){
         myClass.setName(name);
-        return ResponseEntity.ok(myClassService.update(myClass));
+        return ResponseEntity.ok(myClassService.insertOrUpdate(myClass));
     }
 
     @DeleteMapping("/{name}")
