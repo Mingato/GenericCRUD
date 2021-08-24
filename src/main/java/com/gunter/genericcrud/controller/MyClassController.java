@@ -34,8 +34,9 @@ public class MyClassController {
         return ResponseEntity.ok(myClassService.findByName(name));
     }
 
-    @PostMapping
-    public ResponseEntity<MyClass> insert(@RequestBody MyClass myClass){
+    @PostMapping("/{name}")
+    public ResponseEntity<MyClass> insert(@PathVariable("name") String name, @RequestBody MyClass myClass){
+        myClass.setName(name);
         return ResponseEntity.ok(myClassService.insert(myClass));
     }
     @PostMapping("/{name}/fields")
@@ -43,8 +44,9 @@ public class MyClassController {
         return ResponseEntity.ok(myClassService.addFields(name, fields));
     }
 
-    @PutMapping
-    public ResponseEntity<MyClass> update(@RequestBody MyClass myClass){
+    @PutMapping("/{name}")
+    public ResponseEntity<MyClass> update(@PathVariable("name") String name, @RequestBody MyClass myClass){
+        myClass.setName(name);
         return ResponseEntity.ok(myClassService.update(myClass));
     }
 

@@ -71,7 +71,7 @@ public class MyClassService {
                 if(oldField.getName().equals(newField.getName())){
                     oldField.setDescription(newField.getDescription());
                     oldField.setName(newField.getName());
-                    oldField.setNullable(newField.isNullable());
+                    oldField.setRequired(newField.isRequired());
                     oldField.setType(newField.getType());
                 }
             });

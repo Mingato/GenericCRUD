@@ -1,11 +1,15 @@
 package com.gunter.genericcrud.service;
 
+import com.gunter.genericcrud.domain.MyClass;
+import com.gunter.genericcrud.domain.MyMap;
 import com.gunter.genericcrud.domain.MyObject;
 import com.gunter.genericcrud.repository.MyObjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class MyObjectService {
@@ -28,12 +32,43 @@ public class MyObjectService {
 
     public MyObject insert(String name, MyObject myObject){
         myClassService.findByName(name);
+        myObject.setMyInstance(validateFields(myObject));
         return myObjectRepository.save(myObject);
     }
 
     public MyObject update(String name, MyObject myObject){
         myClassService.findByName(name);
+        myObject.setMyInstance(validateFields(myObject));
         return myObjectRepository.save(myObject);
+    }
+
+    private MyMap<String, Object> validateFields(MyObject myObject) {
+        MyClass myClass = MyClassInstanced.getMyClassByName(myObject.getName());
+        MyMap<String, Object> myMap = new MyMap<>();
+        assert myClass != null;
+
+        myClass.getFields().forEach(myField -> {
+            Object fieldValue = myObject.getMyInstance().getOrDefault(myField.getName(),null);
+            String fieldName = myField.getName();
+
+            if(myField.isRequired()) {
+                Assert.notNull(fieldValue, "Field '" + fieldName + "' cannot be null");
+                validateFieldType(fieldName, fieldValue, myField.getType());
+                myMap.put(fieldName, fieldValue);
+            }else{
+                if(fieldValue!= null){
+                    validateFieldType(fieldName, fieldValue, myField.getType());
+                    myMap.put(fieldName,fieldValue);
+                }
+            }
+        });
+
+        return myMap;
+    }
+
+    private void validateFieldType(String fieldName, Object fieldValue, String type) {
+        Assert.isTrue(fieldValue.getClass().getTypeName().toLowerCase().contains(type.toLowerCase()),
+                "Field '" + fieldName + "' does not match the type '" + type + "'");
     }
 
     public void delete(String name, String id){

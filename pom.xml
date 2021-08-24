@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.gunter</groupId>
-	<artifactId>GenericCRUD</artifactId>
+	<artifactId>genericcrud</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>GenericCRUD</name>
+	<name>genericcrud</name>
 	<description>Generic CRUD</description>
 	<properties>
 		<java.version>11</java.version>

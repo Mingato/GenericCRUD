@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -19,13 +20,18 @@ public class MyObjectController {
 
 
     @GetMapping("/{name}")
-    public ResponseEntity<List<MyObject>> findAll(@PathVariable("name") String name){
-        return ResponseEntity.ok(myObjectService.findByName(name));
+    public ResponseEntity<List<Object>> findAll(@PathVariable("name") String name){
+
+        return ResponseEntity.ok(
+                myObjectService.findByName(name).stream()
+                        .map(MyObject::getMyInstanceWithId)
+                .collect(Collectors.toList())
+        );
     }
 
     @GetMapping("/{name}/{id}")
-    public ResponseEntity<MyObject> findAll(@PathVariable("name") String name, @PathVariable("id") String id){
-        return ResponseEntity.ok(myObjectService.findByNameAndId(name, id));
+    public ResponseEntity<MyMap<String,Object>> findAll(@PathVariable("name") String name, @PathVariable("id") String id){
+        return ResponseEntity.ok(myObjectService.findByNameAndId(name, id).getMyInstanceWithId());
     }
 
     @PostMapping("/{name}")

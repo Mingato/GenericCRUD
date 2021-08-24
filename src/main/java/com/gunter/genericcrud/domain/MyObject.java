@@ -1,5 +1,6 @@
 package com.gunter.genericcrud.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,5 +25,12 @@ public class MyObject {
     @Indexed
     @NonNull
     private String name;
-    private Map<String, Object> myInstance = new HashMap<>();
+    private MyMap<String, Object> myInstance = new MyMap();
+
+    @JsonIgnore
+    public MyMap<String, Object> getMyInstanceWithId(){
+        MyMap<String, Object> myInstanceWithId = myInstance;
+        myInstanceWithId.put("id", id);
+        return myInstanceWithId;
+    }
 }

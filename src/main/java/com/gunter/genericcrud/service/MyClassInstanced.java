@@ -15,4 +15,14 @@ public class MyClassInstanced {
         myClasses = myClassRepository.findAll();
     }
 
+
+    public static MyClass getMyClassByName(String name){
+        for(MyClass myClass: myClasses){
+            if(myClass.getName().equals(name)){
+                return myClass;
+            }
+        }
+
+        return null;
+    }
 }

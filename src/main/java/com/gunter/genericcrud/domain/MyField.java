@@ -12,6 +12,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class MyField {
     private String name;
     private String type;
-    private boolean nullable;
+    private boolean required;
     private String description = "";
 }

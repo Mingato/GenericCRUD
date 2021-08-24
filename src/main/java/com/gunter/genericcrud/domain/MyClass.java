@@ -18,7 +18,6 @@ import java.util.List;
 public class MyClass {
     @Id
     @Indexed
-    @NonNull
     private String name;
     private List<MyField> fields = new ArrayList<>();
 }
