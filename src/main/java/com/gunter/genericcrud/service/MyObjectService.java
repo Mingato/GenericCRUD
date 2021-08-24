@@ -69,8 +69,6 @@ public class MyObjectService {
     private void validateFieldType(String fieldName, Object fieldValue, String type) {
         Assert.isTrue(fieldValue.getClass().getTypeName().toLowerCase().contains(type.toLowerCase()),
                 "Field '" + fieldName + "' does not match the type '" + type + "'");
-
-        //TODO: verificar quando for java.util.LinkedHashMap ou Object
     }
 
     public void delete(String name, String id){
