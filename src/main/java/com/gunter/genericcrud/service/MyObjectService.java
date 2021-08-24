@@ -46,22 +46,23 @@ public class MyObjectService {
         MyClass myClass = MyClassInstanced.getMyClassByName(myObject.getName());
         MyMap<String, Object> myMap = new MyMap<>();
         assert myClass != null;
+        if(myClass!= null) {
+            myClass.getFields().forEach(myField -> {
+                Object fieldValue = myObject.getMyInstance().getOrDefault(myField.getName(), null);
+                String fieldName = myField.getName();
 
-        myClass.getFields().forEach(myField -> {
-            Object fieldValue = myObject.getMyInstance().getOrDefault(myField.getName(),null);
-            String fieldName = myField.getName();
-
-            if(myField.isRequired()) {
-                Assert.notNull(fieldValue, "Field '" + fieldName + "' cannot be null");
-                validateFieldType(fieldName, fieldValue, myField.getType());
-                myMap.put(fieldName, fieldValue);
-            }else{
-                if(fieldValue!= null){
+                if (myField.isRequired()) {
+                    Assert.notNull(fieldValue, "Field '" + fieldName + "' cannot be null");
                     validateFieldType(fieldName, fieldValue, myField.getType());
-                    myMap.put(fieldName,fieldValue);
+                    myMap.put(fieldName, fieldValue);
+                } else {
+                    if (fieldValue != null) {
+                        validateFieldType(fieldName, fieldValue, myField.getType());
+                        myMap.put(fieldName, fieldValue);
+                    }
                 }
-            }
-        });
+            });
+        }
 
         return myMap;
     }
