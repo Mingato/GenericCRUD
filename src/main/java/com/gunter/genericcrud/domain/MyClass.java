@@ -1,4 +1,4 @@
-package com.gunter.GenericCRUD.domain;
+package com.gunter.genericcrud.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

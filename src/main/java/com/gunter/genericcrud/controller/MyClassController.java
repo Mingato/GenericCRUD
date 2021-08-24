@@ -1,10 +1,10 @@
-package com.gunter.GenericCRUD.controller;
+package com.gunter.genericcrud.controller;
 
-import com.gunter.GenericCRUD.domain.MyClass;
-import com.gunter.GenericCRUD.domain.MyField;
-import com.gunter.GenericCRUD.repository.MyClassRepository;
-import com.gunter.GenericCRUD.service.MyClassInstanced;
-import com.gunter.GenericCRUD.service.MyClassService;
+import com.gunter.genericcrud.domain.MyClass;
+import com.gunter.genericcrud.domain.MyField;
+import com.gunter.genericcrud.repository.MyClassRepository;
+import com.gunter.genericcrud.service.MyClassInstanced;
+import com.gunter.genericcrud.service.MyClassService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -44,8 +44,8 @@ public class MyClassController {
     }
 
     @PutMapping
-    public ResponseEntity<MyClass> upSert(@RequestBody MyClass myClass){
-        return ResponseEntity.ok(myClassService.upSert(myClass));
+    public ResponseEntity<MyClass> update(@RequestBody MyClass myClass){
+        return ResponseEntity.ok(myClassService.update(myClass));
     }
 
     @DeleteMapping("/{name}")

@@ -1,12 +1,14 @@
-package com.gunter.GenericCRUD.controller;
+package com.gunter.genericcrud.controller;
 
-import com.gunter.GenericCRUD.domain.MyObject;
-import com.gunter.GenericCRUD.service.MyObjectService;
+import com.gunter.genericcrud.domain.MyMap;
+import com.gunter.genericcrud.domain.MyObject;
+import com.gunter.genericcrud.service.MyObjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -27,13 +29,14 @@ public class MyObjectController {
     }
 
     @PostMapping("/{name}")
-    public ResponseEntity<MyObject> insert(@PathVariable("name") String name, @RequestBody MyObject myObject){
-        return ResponseEntity.ok(myObjectService.insert(name, myObject));
+    public ResponseEntity<MyObject> insert(@PathVariable("name") String name, @RequestBody MyMap<String,Object> genericObject){
+        return ResponseEntity.ok(myObjectService.insert(name, new MyObject(null, name, genericObject)));
     }
 
     @PutMapping("/{name}/{id}")
-    public ResponseEntity<MyObject> upSert(@PathVariable("name") String name, @RequestBody MyObject myObject){
-        return ResponseEntity.ok(myObjectService.upSert(name, myObject));
+    public ResponseEntity<MyObject> update(@PathVariable("name") String name, @PathVariable("id") String id,
+                                           @RequestBody MyMap<String,Object> genericObject){
+        return ResponseEntity.ok(myObjectService.update(name, new MyObject(id, name, genericObject)));
     }
 
     @DeleteMapping("/{name}/{id}")

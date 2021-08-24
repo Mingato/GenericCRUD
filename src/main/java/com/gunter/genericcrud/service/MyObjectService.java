@@ -1,7 +1,7 @@
-package com.gunter.GenericCRUD.service;
+package com.gunter.genericcrud.service;
 
-import com.gunter.GenericCRUD.domain.MyObject;
-import com.gunter.GenericCRUD.repository.MyObjectRepository;
+import com.gunter.genericcrud.domain.MyObject;
+import com.gunter.genericcrud.repository.MyObjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +31,7 @@ public class MyObjectService {
         return myObjectRepository.save(myObject);
     }
 
-    public MyObject upSert(String name, MyObject myObject){
+    public MyObject update(String name, MyObject myObject){
         myClassService.findByName(name);
         return myObjectRepository.save(myObject);
     }
