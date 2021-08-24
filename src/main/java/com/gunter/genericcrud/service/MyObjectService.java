@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.util.List;
-import java.util.Locale;
 
 @Service
 public class MyObjectService {
@@ -45,7 +44,7 @@ public class MyObjectService {
     private MyMap<String, Object> validateFields(MyObject myObject) {
         MyClass myClass = MyClassInstanced.getMyClassByName(myObject.getName());
         MyMap<String, Object> myMap = new MyMap<>();
-        assert myClass != null;
+
         if(myClass!= null) {
             myClass.getFields().forEach(myField -> {
                 Object fieldValue = myObject.getMyInstance().getOrDefault(myField.getName(), null);
@@ -70,6 +69,8 @@ public class MyObjectService {
     private void validateFieldType(String fieldName, Object fieldValue, String type) {
         Assert.isTrue(fieldValue.getClass().getTypeName().toLowerCase().contains(type.toLowerCase()),
                 "Field '" + fieldName + "' does not match the type '" + type + "'");
+
+        //TODO: verificar quando for java.util.LinkedHashMap ou Object
     }
 
     public void delete(String name, String id){
