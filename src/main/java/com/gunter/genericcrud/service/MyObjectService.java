@@ -83,7 +83,8 @@ public class MyObjectService {
     private void validateFieldType(Object fieldValue, String fieldName, String type) {
         if (fieldValue != null) {
             Assert.isTrue(fieldValue.getClass().getTypeName().toLowerCase().contains(type.toLowerCase()),
-                    "Field '" + fieldName + "' does not match the type '" + type + "'");
+                    "Field '" + fieldName + "' is type '" + fieldValue.getClass().getTypeName()
+                            +"', but the type required is '" + type + "'");
         }
     }
 
