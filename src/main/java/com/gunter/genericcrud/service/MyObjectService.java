@@ -1,14 +1,15 @@
 package com.gunter.genericcrud.service;
 
 import com.gunter.genericcrud.domain.MyClass;
-import com.gunter.genericcrud.domain.MyMap;
 import com.gunter.genericcrud.domain.MyObject;
 import com.gunter.genericcrud.repository.MyObjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class MyObjectService {
@@ -41,9 +42,9 @@ public class MyObjectService {
         return myObjectRepository.save(myObject);
     }
 
-    private MyMap<String, Object> validateFields(MyObject myObject) {
+    private Map<String, Object> validateFields(MyObject myObject) {
         MyClass myClass = MyClassInstanced.getMyClassByName(myObject.getName());
-        MyMap<String, Object> myMap = new MyMap<>();
+        Map<String, Object> myMap = new HashMap<>();
 
         if(myClass!= null) {
             myClass.getFields().forEach(myField -> {

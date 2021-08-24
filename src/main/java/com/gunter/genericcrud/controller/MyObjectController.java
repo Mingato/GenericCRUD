@@ -1,6 +1,5 @@
 package com.gunter.genericcrud.controller;
 
-import com.gunter.genericcrud.domain.MyMap;
 import com.gunter.genericcrud.domain.MyObject;
 import com.gunter.genericcrud.service.MyObjectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,19 +29,19 @@ public class MyObjectController {
     }
 
     @GetMapping("/{name}/{id}")
-    public ResponseEntity<MyMap<String,Object>> findAll(@PathVariable("name") String name, @PathVariable("id") String id){
+    public ResponseEntity<Map<String,Object>> findAll(@PathVariable("name") String name, @PathVariable("id") String id){
         return ResponseEntity.ok(myObjectService.findByNameAndId(name, id).getMyInstanceWithId());
     }
 
     @PostMapping("/{name}")
-    public ResponseEntity<MyObject> insert(@PathVariable("name") String name, @RequestBody MyMap<String,Object> genericObject){
-        return ResponseEntity.ok(myObjectService.insert(name, new MyObject(null, name, genericObject)));
+    public ResponseEntity<Map<String,Object>> insert(@PathVariable("name") String name, @RequestBody Map<String,Object> genericObject){
+        return ResponseEntity.ok(myObjectService.insert(name, new MyObject(null, name, genericObject)).getMyInstanceWithId());
     }
 
     @PutMapping("/{name}/{id}")
-    public ResponseEntity<MyObject> update(@PathVariable("name") String name, @PathVariable("id") String id,
-                                           @RequestBody MyMap<String,Object> genericObject){
-        return ResponseEntity.ok(myObjectService.update(name, new MyObject(id, name, genericObject)));
+    public ResponseEntity<Map<String,Object>> update(@PathVariable("name") String name, @PathVariable("id") String id,
+                                           @RequestBody Map<String,Object> genericObject){
+        return ResponseEntity.ok(myObjectService.update(name, new MyObject(id, name, genericObject)).getMyInstanceWithId());
     }
 
     @DeleteMapping("/{name}/{id}")

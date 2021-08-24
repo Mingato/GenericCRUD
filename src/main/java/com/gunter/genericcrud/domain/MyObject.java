@@ -25,11 +25,11 @@ public class MyObject {
     @Indexed
     @NonNull
     private String name;
-    private MyMap<String, Object> myInstance = new MyMap();
+    private Map<String, Object> myInstance = new HashMap<>();
 
     @JsonIgnore
-    public MyMap<String, Object> getMyInstanceWithId(){
-        MyMap<String, Object> myInstanceWithId = myInstance;
+    public Map<String, Object> getMyInstanceWithId(){
+        Map<String, Object> myInstanceWithId = myInstance;
         myInstanceWithId.put("id", id);
         return myInstanceWithId;
     }
