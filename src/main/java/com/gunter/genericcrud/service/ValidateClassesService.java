@@ -25,13 +25,16 @@ public class ValidateClassesService {
     private void validate(MyField myField, String parentFieldName) {
         parentFieldName = parentFieldName + "." + myField.getName();
         final String myType = myField.getType().toUpperCase();
-        Assert.notNull(myType, "Field " + parentFieldName + " must not be null!");
+        Assert.notNull(myField.getName(), "Field '" + parentFieldName + "' can't be null!");
+        Assert.notNull(myType, "Type of field '" + parentFieldName + "' can't be null!");
+        Assert.notNull(myField.isRequired(), "Required from '" + parentFieldName + "' can't be null!");
+
 
         if(MyTypes.HASHMAP.equals(myType)){
-            Assert.notEmpty(myField.getFields(), "Field " + parentFieldName + " must not be empty!");
+            Assert.notEmpty(myField.getFields(), "Field " + parentFieldName + " can't be empty!");
             validate(myField.getFields(), parentFieldName);
         } else if(MyTypes.LIST.equals(myType)){
-            Assert.notNull(myField.getFieldTypeList(), "Field List in '" + parentFieldName + "' must not be null!");
+            Assert.notNull(myField.getFieldTypeList(), "Field List in '" + parentFieldName + "' can't be null!");
 
             validate(myField.getFieldTypeList(), parentFieldName);
         } else if( !(MyTypes.STRING.equals(myType) ||
