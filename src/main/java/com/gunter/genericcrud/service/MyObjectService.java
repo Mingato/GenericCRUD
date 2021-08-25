@@ -1,15 +1,11 @@
 package com.gunter.genericcrud.service;
 
-import com.gunter.genericcrud.domain.MyClass;
-import com.gunter.genericcrud.domain.MyField;
 import com.gunter.genericcrud.domain.MyObject;
 import com.gunter.genericcrud.repository.MyObjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 
-import java.lang.reflect.Field;
-import java.util.*;
+import java.util.List;
 
 @Service
 public class MyObjectService {

@@ -1,10 +1,15 @@
 package com.gunter.genericcrud.domain;
 
 public enum MyTypes {
-    OBJECT,
-    LIST,
-    STRING,
-    INTEGER,
-    NUMBER,
-    BOOLEAN
+    HASHMAP("HASHMAP"),
+    LIST("LIST"),
+    STRING("STRING"),
+    INTEGER("INTEGER"),
+    NUMBER("NUMBER"),
+    BOOLEAN("BOOLEAN");
+
+    public final String typeName;
+    MyTypes(String typeName) {
+        this.typeName = typeName;
+    }
 }

@@ -41,8 +41,7 @@ public class ValidateObjectsService {
 
     private void validateFieldNotNull(Object fieldValue, String fieldName, boolean required, String parentFieldName) {
         if (required) {
-            Assert.notNull(fieldValue, "Field '" + parentFieldName+ "."
-                    + fieldName + "' cannot be null");
+            Assert.notNull(fieldValue, "Field '" + parentFieldName+ "." + fieldName + "' cannot be null");
         }
     }
 

@@ -38,7 +38,6 @@ public class MyClassService {
     }
 
 
-
     public void delete(String name){
         myClassRepository.deleteById(name);
         MyClassInstanced.init(myClassRepository);
@@ -48,6 +47,7 @@ public class MyClassService {
         MyClass myClass = findByName(name);
 
         myClass.setFields(mergeFields(myClass.getFields(), fields));
+        validateClassesService.validateTypesAndStructure(myClass);
 
         myClassRepository.save(myClass);
         MyClassInstanced.init(myClassRepository);
