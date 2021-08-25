@@ -27,7 +27,7 @@ public class MyField {
 
     @Valid
     @NotNull(message = "field 'required' can1t be null")
-    private boolean required;
+    private boolean required = false;
 
     private String description = "";
 

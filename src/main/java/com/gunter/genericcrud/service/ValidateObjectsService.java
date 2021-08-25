@@ -39,6 +39,18 @@ public class ValidateObjectsService {
         }
     }
 
+    private void validateFieldsHashMap(Map<String, Object> myObject, List<MyField> fields, Map<String, Object> myMap, String parentFieldName) {
+        if(fields != null) {
+            fields.forEach(myField -> {
+                Object fieldValue = myObject.getOrDefault(myField.getName(), null);
+                String fieldName = myField.getName();
+
+                validateFieldNotNull(fieldValue, fieldName, myField.isRequired(), parentFieldName);
+                validateFieldType(fieldValue, fieldName, myField.getType(), myField, myMap, parentFieldName);
+            });
+        }
+    }
+
     private void validateFieldNotNull(Object fieldValue, String fieldName, boolean required, String parentFieldName) {
         if (required) {
             Assert.notNull(fieldValue, "Field '" + parentFieldName+ "." + fieldName + "' cannot be null");
@@ -46,6 +58,7 @@ public class ValidateObjectsService {
     }
 
     private void validateFieldType(Object fieldValue, String fieldName, String type, MyField myField, Map<String, Object> myMap, String parentFieldName) {
+        //TODO:caso o tipo for double e receber um integer, considerar o type correto
         if (fieldValue != null) {
             Assert.isTrue(fieldValue.getClass().getTypeName().toLowerCase().contains(type.toLowerCase()),
                     "Field '" + parentFieldName + "." + fieldName + "' is type '" +
@@ -55,7 +68,7 @@ public class ValidateObjectsService {
 
         //validade HashMap Field
         if(fieldValue.getClass().getTypeName().toLowerCase().contains("HashMap".toLowerCase())){
-            validateFields((LinkedHashMap) fieldValue, myField.getFields(), myMap, parentFieldName+"."+fieldName);
+            validateFieldsHashMap((LinkedHashMap) fieldValue, myField.getFields(), myMap, parentFieldName+"."+fieldName);
         }
 
         validateFilesInList(fieldValue, myField, myMap, parentFieldName);

@@ -7,6 +7,7 @@ public enum MyTypes {
     INTEGER("INTEGER"),
     NUMBER("NUMBER"),
     BOOLEAN("BOOLEAN");
+    //TODO: adicionar tipo datas
 
     public final String typeName;
     MyTypes(String typeName) {
