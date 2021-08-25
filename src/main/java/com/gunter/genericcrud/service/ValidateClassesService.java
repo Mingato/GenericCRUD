@@ -23,18 +23,17 @@ public class ValidateClassesService {
     }
 
     private void validate(MyField myField, String parentFieldName) {
+        Assert.notNull(myField.getName(), "Field 'name' of " + parentFieldName + " can't be null!");
         parentFieldName = parentFieldName + "." + myField.getName();
-        final String myType = myField.getType().toUpperCase();
-        Assert.notNull(myField.getName(), "Field '" + parentFieldName + "' can't be null!");
-        Assert.notNull(myType, "Type of field '" + parentFieldName + "' can't be null!");
-        Assert.notNull(myField.isRequired(), "Required from '" + parentFieldName + "' can't be null!");
 
+        Assert.notNull(myField.getType(), "Field 'type' of " + parentFieldName + " can't be null!");
+        final String myType = myField.getType().toUpperCase();
 
         if(MyTypes.HASHMAP.equals(myType)){
-            Assert.notEmpty(myField.getFields(), "Field " + parentFieldName + " can't be empty!");
+            Assert.notEmpty(myField.getFields(), "Fields of" + parentFieldName + " can't be empty, because it's an HasMap type!");
             validate(myField.getFields(), parentFieldName);
         } else if(MyTypes.LIST.equals(myType)){
-            Assert.notNull(myField.getFieldTypeList(), "Field List in '" + parentFieldName + "' can't be null!");
+            Assert.notNull(myField.getFieldTypeList(), "fieldTypeList in " + parentFieldName + " can't be null, because a list needs a listTypeField");
 
             validate(myField.getFieldTypeList(), parentFieldName);
         } else if( !(MyTypes.STRING.equals(myType) ||
