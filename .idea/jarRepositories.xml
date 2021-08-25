@@ -2,9 +2,19 @@
 <project version="4">
   <component name="RemoteRepositoriesConfiguration">
     <remote-repository>
+      <option name="id" value="OnTapUtils" />
+      <option name="name" value="OnTapUtils" />
+      <option name="url" value="https://ab-inbev.pkgs.visualstudio.com/GHQ_ABI_Salesforce_OneApp/_packaging/OnTapUtils/maven/v1" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="central" />
       <option name="name" value="Central Repository" />
       <option name="url" value="https://repo.maven.apache.org/maven2" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="GHD_SalesSystem_Maven" />
+      <option name="name" value="GHD_SalesSystem_Maven" />
+      <option name="url" value="https://ab-inbev.pkgs.visualstudio.com/_packaging/GHD_SalesSystems_Maven/maven/v1" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="central" />

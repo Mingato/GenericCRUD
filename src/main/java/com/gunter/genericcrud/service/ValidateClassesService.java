@@ -29,32 +29,19 @@ public class ValidateClassesService {
         Assert.notNull(myField.getType(), "Field 'type' of " + parentFieldName + " can't be null!");
         final String myType = myField.getType().toUpperCase();
 
-        if(MyTypes.HASHMAP.equals(myType)){
-            Assert.notEmpty(myField.getFields(), "Fields of" + parentFieldName + " can't be empty, because it's an HasMap type!");
+        if(MyTypes.HASHMAP.toString().equals(myType)){
+            Assert.notEmpty(myField.getFields(), "the attribute 'fields' in " + parentFieldName + " can't be empty, because it's an HasMap type!");
             validate(myField.getFields(), parentFieldName);
-        } else if(MyTypes.LIST.equals(myType)){
+        } else if(MyTypes.LIST.toString().equals(myType)){
             Assert.notNull(myField.getFieldTypeList(), "fieldTypeList in " + parentFieldName + " can't be null, because a list needs a listTypeField");
 
             validate(myField.getFieldTypeList(), parentFieldName);
-        } else if( !(MyTypes.STRING.equals(myType) ||
-                    MyTypes.INTEGER.equals(myType) ||
-                    MyTypes.NUMBER.equals(myType) ||
-                    MyTypes.BOOLEAN.equals(myType) )){
-            //TODO: lançar excessao pois não possui o type valido
+        } else if( !(MyTypes.STRING.toString().equals(myType) ||
+                    MyTypes.INTEGER.toString().equals(myType) ||
+                    MyTypes.NUMBER.toString().equals(myType) ||
+                    MyTypes.BOOLEAN.toString().equals(myType) )){
+            Assert.isTrue(false, "Field '" + parentFieldName + "' has a unknown type!");
         }
-        System.out.println("");
     }
 
-    private boolean isValidType(String myType){
-        if(MyTypes.HASHMAP.equals(myType) ||
-            MyTypes.LIST.equals(myType) ||
-            MyTypes.STRING.equals(myType) ||
-            MyTypes.INTEGER.equals(myType) ||
-            MyTypes.NUMBER.equals(myType) ||
-            MyTypes.BOOLEAN.equals(myType)){
-            return true;
-        }
-
-        return false;
-    }
 }
