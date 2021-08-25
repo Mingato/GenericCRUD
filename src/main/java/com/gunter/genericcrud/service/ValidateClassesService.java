@@ -3,10 +3,10 @@ package com.gunter.genericcrud.service;
 import com.gunter.genericcrud.domain.MyClass;
 import com.gunter.genericcrud.domain.MyField;
 import com.gunter.genericcrud.domain.MyTypes;
+import com.gunter.genericcrud.exception.MyTypeDoesNotExistException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -36,11 +36,22 @@ public class ValidateClassesService {
             Assert.notNull(myField.getFieldTypeList(), "fieldTypeList in " + parentFieldName + " can't be null, because a list needs a listTypeField");
 
             validate(myField.getFieldTypeList(), parentFieldName);
-        } else if( !(MyTypes.STRING.toString().equals(myType) ||
-                    MyTypes.INTEGER.toString().equals(myType) ||
-                    MyTypes.NUMBER.toString().equals(myType) ||
-                    MyTypes.BOOLEAN.toString().equals(myType) )){
-            Assert.isTrue(false, "Field '" + parentFieldName + "' has a unknown type!");
+        }
+
+        validateTypes(myType, parentFieldName);
+    }
+
+    private void validateTypes(String myType, String parentFieldName){
+        boolean doesNotHaveType = true;
+        for(MyTypes myTypes: MyTypes.values()){
+            if (myTypes.typeName.equalsIgnoreCase(myType)) {
+                doesNotHaveType = false;
+                break;
+            }
+        }
+
+        if(doesNotHaveType){
+            throw new MyTypeDoesNotExistException("Field '" + parentFieldName + "' with type '" + myType + "' does not exist");
         }
     }
 

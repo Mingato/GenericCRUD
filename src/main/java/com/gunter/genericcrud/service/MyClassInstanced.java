@@ -23,6 +23,6 @@ public class MyClassInstanced {
             }
         }
 
-        return null;
+        throw new NullPointerException("getMyClassByName: Class " + name + " not found");
     }
 }

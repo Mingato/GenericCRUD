@@ -3,50 +3,32 @@ package com.gunter.genericcrud.service;
 import com.gunter.genericcrud.domain.MyClass;
 import com.gunter.genericcrud.domain.MyField;
 import com.gunter.genericcrud.domain.MyObject;
+import com.gunter.genericcrud.domain.MyTypes;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.math.BigDecimal;
+import java.util.*;
 
 @Service
 public class ValidateObjectsService {
 
     public Map<String, Object> validateFields(MyObject myObject) {
         MyClass myClass = MyClassInstanced.getMyClassByName(myObject.getName());
-        Map<String, Object> myMap = new HashMap<>();
 
-        if(myClass != null) {
-            validateFields(myObject.getMyInstance(), myClass.getFields(), myMap, myObject.getName());
-        }
+        validateFields(myObject.getMyInstance(), myClass.getFields(), myObject.getName());
 
-        return myMap;
+        return myObject.getMyInstance();
     }
 
-    private void validateFields(Map<String, Object> myObject, List<MyField> fields, Map<String, Object> myMap, String parentFieldName) {
+    private void validateFields(Map<String, Object> myObject, List<MyField> fields, String parentFieldName) {
         if(fields != null) {
             fields.forEach(myField -> {
                 Object fieldValue = myObject.getOrDefault(myField.getName(), null);
                 String fieldName = myField.getName();
 
                 validateFieldNotNull(fieldValue, fieldName, myField.isRequired(), parentFieldName);
-                validateFieldType(fieldValue, fieldName, myField.getType(), myField, myMap, parentFieldName);
-
-                myMap.put(fieldName, fieldValue);
-            });
-        }
-    }
-
-    private void validateFieldsHashMap(Map<String, Object> myObject, List<MyField> fields, Map<String, Object> myMap, String parentFieldName) {
-        if(fields != null) {
-            fields.forEach(myField -> {
-                Object fieldValue = myObject.getOrDefault(myField.getName(), null);
-                String fieldName = myField.getName();
-
-                validateFieldNotNull(fieldValue, fieldName, myField.isRequired(), parentFieldName);
-                validateFieldType(fieldValue, fieldName, myField.getType(), myField, myMap, parentFieldName);
+                validateFieldType(fieldValue, fieldName, myField.getType(), myField, parentFieldName);
             });
         }
     }
@@ -57,33 +39,62 @@ public class ValidateObjectsService {
         }
     }
 
-    private void validateFieldType(Object fieldValue, String fieldName, String type, MyField myField, Map<String, Object> myMap, String parentFieldName) {
-        //TODO:caso o tipo for double e receber um integer, considerar o type correto
-        if (fieldValue != null) {
-            Assert.isTrue(fieldValue.getClass().getTypeName().toLowerCase().contains(type.toLowerCase()),
-                    "Field '" + parentFieldName + "." + fieldName + "' is type '" +
-                            fieldValue.getClass().getTypeName()
-                            +"', but the type required is '" + type + "'");
-        }
+    private void validateFieldType(Object fieldValue, String fieldName, String type, MyField myField, String parentFieldName) {
+        validateType(fieldValue, fieldName, type, parentFieldName);
 
         //validade HashMap Field
-        if(fieldValue.getClass().getTypeName().toLowerCase().contains("HashMap".toLowerCase())){
-            validateFieldsHashMap((LinkedHashMap) fieldValue, myField.getFields(), myMap, parentFieldName+"."+fieldName);
+        if(fieldValue.getClass().getTypeName().toUpperCase().contains(MyTypes.HASHMAP.typeName)){
+            validateFields((LinkedHashMap) fieldValue, myField.getFields(), parentFieldName+"."+fieldName);
         }
 
-        validateFilesInList(fieldValue, myField, myMap, parentFieldName);
+        validateFilesInList(fieldValue, myField, parentFieldName);
     }
 
-    private void validateFilesInList(Object fieldValue, MyField myField, Map<String, Object> myMap, String parentFieldName){
-        //TODO: validar itens de uma lista de acordo com o parâmetro list type
-        if(fieldValue.getClass().getTypeName().toLowerCase().contains("List".toLowerCase())) {
-            //TODO: percorrer lista e verificar o tipo de cada elemento
-            //TODO: para os tipos genericos String, Integer criar uma lista com os elementos, pois isto já irá validar se o tipo esta correto
-            //TODO: para tipo de hashMap chamar função de validateFieldType para cada elemento
-            //myField.getListType();
-            //List<Integer> variable = (List<Integer>) (List<?>) fieldValue;
-            //validateFieldType
+    private void validateType(Object fieldValue, String fieldName, String type, String parentFieldName) {
+        String errorMessage = "Field '" + parentFieldName + "." + fieldName + "' is type '" +
+                fieldValue.getClass().getTypeName()
+                + "', but the type required is '" + type + "'";
+
+        if(MyTypes.NUMBER.typeName.equalsIgnoreCase(type)){
+            Assert.isTrue(isNumberType(fieldValue.getClass()), errorMessage);
+        }else {
+            Assert.isTrue(fieldValue.getClass().getTypeName().toLowerCase().contains(type.toLowerCase()), errorMessage);
         }
 
+    }
+
+    private void validateFilesInList(Object fieldValue, MyField myField, String parentFieldName){
+        if(isCollection(fieldValue)) {
+
+            String listType = myField.getFieldTypeList().getType();
+            ArrayList list = (ArrayList) fieldValue;
+            int index = 0;
+            for(Object element: list) {
+                validateFieldType(element, myField.getName()+"[" + index + "]", listType, myField.getFieldTypeList(), parentFieldName);
+                index++;
+            }
+        }
+    }
+
+    public static boolean isCollection(Object obj) {
+        return obj.getClass().isArray() || obj instanceof Collection;
+    }
+
+    private static final Set<Class<?>> WRAPPER_TYPES = getNumberTypes();
+
+    public static boolean isNumberType(Class<?> clazz) {
+        return WRAPPER_TYPES.contains(clazz);
+    }
+
+    private static Set<Class<?>> getNumberTypes()
+    {
+        Set<Class<?>> ret = new HashSet<>();
+        ret.add(Short.class);
+        ret.add(Integer.class);
+        ret.add(Long.class);
+        ret.add(Float.class);
+        ret.add(Double.class);
+        ret.add(BigDecimal.class);
+        return ret;
     }
 }

@@ -4,7 +4,6 @@ public enum MyTypes {
     HASHMAP("HASHMAP"),
     LIST("LIST"),
     STRING("STRING"),
-    INTEGER("INTEGER"),
     NUMBER("NUMBER"),
     BOOLEAN("BOOLEAN");
     //TODO: adicionar tipo datas
