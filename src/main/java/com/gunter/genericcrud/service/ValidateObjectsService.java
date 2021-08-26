@@ -23,9 +23,7 @@ public class ValidateObjectsService {
     public Map<String, Object> validateFields(MyObject myObject) {
         MyClass myClass = MyClassInstanced.getMyClassByName(myObject.getName());
 
-        Map<String, Object> myInstance = validateFields(myObject.getMyInstance(), myClass.getFields(), myObject.getName());
-
-        return myInstance;
+        return validateFields(myObject.getMyInstance(), myClass.getFields(), myObject.getName());
     }
 
     private Map<String, Object> validateFields(Map<String, Object> myObject, List<MyField> fields, String parentFieldName) {
@@ -79,10 +77,10 @@ public class ValidateObjectsService {
 
     }
 
-    private List<Object> validateFilesInList(Object fieldValue, MyField myField, String parentFieldName){
+    private ArrayList<Object> validateFilesInList(Object fieldValue, MyField myField, String parentFieldName){
         String listType = myField.getFieldTypeList().getType();
-        ArrayList listValidated = new ArrayList();
-        ArrayList list = (ArrayList) fieldValue;
+        ArrayList<Object> listValidated = new ArrayList<>();
+        ArrayList<Object> list = (ArrayList<Object>) fieldValue;
         
         int index = 0;
         for(Object element: list) {
@@ -108,7 +106,9 @@ public class ValidateObjectsService {
                 try{
                     ZonedDateTime.parse(date, DateTimeFormatter.ISO_DATE_TIME);
                     isValidDate = true;
-                }catch (Exception ignored){}
+                }catch (Exception e){
+                    dateMessageErrorParser = e.getMessage() + " | " + e.getCause();
+                }
             }
 
             Assert.isTrue(isValidDate, "The Field '" + parentFieldName + "' = '"
