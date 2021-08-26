@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -57,7 +60,11 @@ public class ValidateObjectsService {
 
         if(MyTypes.NUMBER.typeName.equalsIgnoreCase(type)){
             Assert.isTrue(isNumberType(fieldValue.getClass()), errorMessage);
-        }else {
+        }else if(MyTypes.DATE.typeName.equalsIgnoreCase(type)){
+            Assert.isTrue(fieldValue.getClass().isInstance(""), errorMessage + " that type is a String");
+            //TODO: passar o formato da data
+            validateDate(String.valueOf(fieldValue));
+        } else{
             Assert.isTrue(fieldValue.getClass().getTypeName().toLowerCase().contains(type.toLowerCase()), errorMessage);
         }
 
@@ -74,6 +81,12 @@ public class ValidateObjectsService {
                 index++;
             }
         }
+    }
+
+    private void validateDate(String date) {
+        //TODO: validar a data de acordo com o seu formato
+        var zonedDateTime = ZonedDateTime.parse(date, DateTimeFormatter.ISO_DATE_TIME);
+        zonedDateTime.toLocalDate();
     }
 
     public static boolean isCollection(Object obj) {

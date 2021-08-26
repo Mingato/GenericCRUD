@@ -30,12 +30,16 @@ public class ValidateClassesService {
         final String myType = myField.getType().toUpperCase();
 
         if(MyTypes.HASHMAP.toString().equals(myType)){
-            Assert.notEmpty(myField.getFields(), "the attribute 'fields' in " + parentFieldName + " can't be empty, because it's an HasMap type!");
+            Assert.notEmpty(myField.getFields(), "Field 'fields' in " + parentFieldName + " can't be null");
             validate(myField.getFields(), parentFieldName);
         } else if(MyTypes.LIST.toString().equals(myType)){
-            Assert.notNull(myField.getFieldTypeList(), "fieldTypeList in " + parentFieldName + " can't be null, because a list needs a listTypeField");
+            Assert.notNull(myField.getFieldTypeList(), "Field 'fieldTypeList' in " + parentFieldName + " can't be null");
 
             validate(myField.getFieldTypeList(), parentFieldName);
+        }else if(MyTypes.DATE.toString().equals(myType)){
+            //TODO: verificar quando for data se popssui o formato da data
+            //Assert.notNull(myField.getFieldTypeList(), "Field 'fieldTypeList' in " + parentFieldName + " can't be null");
+
         }
 
         validateTypes(myType, parentFieldName);

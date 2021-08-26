@@ -5,8 +5,8 @@ public enum MyTypes {
     LIST("LIST"),
     STRING("STRING"),
     NUMBER("NUMBER"),
-    BOOLEAN("BOOLEAN");
-    //TODO: adicionar tipo datas
+    BOOLEAN("BOOLEAN"),
+    DATE("DATE");
 
     public final String typeName;
     MyTypes(String typeName) {
