@@ -36,10 +36,6 @@ public class ValidateClassesService {
             Assert.notNull(myField.getFieldTypeList(), "Field 'fieldTypeList' in " + parentFieldName + " can't be null");
 
             validate(myField.getFieldTypeList(), parentFieldName);
-        }else if(MyTypes.DATE.toString().equals(myType)){
-            //TODO: verificar quando for data se popssui o formato da data
-            //Assert.notNull(myField.getFieldTypeList(), "Field 'fieldTypeList' in " + parentFieldName + " can't be null");
-
         }
 
         validateTypes(myType, parentFieldName);

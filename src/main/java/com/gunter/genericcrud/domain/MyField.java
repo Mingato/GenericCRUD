@@ -43,7 +43,8 @@ public class MyField {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private String myClassNameReference;
 
-    //TODO: definir o formato da data
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private String dateFormat;
 
     public List<MyField> getFields() {
         if(MyTypes.HASHMAP.typeName.equalsIgnoreCase(type) && myClassNameReference != null){

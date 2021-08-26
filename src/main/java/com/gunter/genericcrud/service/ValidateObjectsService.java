@@ -4,17 +4,21 @@ import com.gunter.genericcrud.domain.MyClass;
 import com.gunter.genericcrud.domain.MyField;
 import com.gunter.genericcrud.domain.MyObject;
 import com.gunter.genericcrud.domain.MyTypes;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+@Slf4j
 @Service
 public class ValidateObjectsService {
+
+    private String dateMessageErrorParser = "";
 
     public Map<String, Object> validateFields(MyObject myObject) {
         MyClass myClass = MyClassInstanced.getMyClassByName(myObject.getName());
@@ -25,25 +29,25 @@ public class ValidateObjectsService {
     }
 
     private void validateFields(Map<String, Object> myObject, List<MyField> fields, String parentFieldName) {
+        //TODO: para cada objeto só adicionar os campos que estão em fields
         if(fields != null) {
             fields.forEach(myField -> {
                 Object fieldValue = myObject.getOrDefault(myField.getName(), null);
-                String fieldName = myField.getName();
 
-                validateFieldNotNull(fieldValue, fieldName, myField.isRequired(), parentFieldName);
-                validateFieldType(fieldValue, fieldName, myField.getType(), myField, parentFieldName);
+                validateFieldNotNull(fieldValue, myField, parentFieldName);
+                validateFieldType(fieldValue, myField.getName(), myField.getType(), myField, parentFieldName);
             });
         }
     }
 
-    private void validateFieldNotNull(Object fieldValue, String fieldName, boolean required, String parentFieldName) {
-        if (required) {
-            Assert.notNull(fieldValue, "Field '" + parentFieldName+ "." + fieldName + "' cannot be null");
+    private void validateFieldNotNull(Object fieldValue, MyField myField, String parentFieldName) {
+        if (myField.isRequired()) {
+            Assert.notNull(fieldValue, "Field '" + parentFieldName+ "." + myField.getName() + "' cannot be null");
         }
     }
 
-    private void validateFieldType(Object fieldValue, String fieldName, String type, MyField myField, String parentFieldName) {
-        validateType(fieldValue, fieldName, type, parentFieldName);
+    private void validateFieldType(Object fieldValue, String fieldName, String fieldType, MyField myField, String parentFieldName) {
+        validateType(fieldValue, fieldType, myField, parentFieldName + "." + fieldName);
 
         //validade HashMap Field
         if(fieldValue.getClass().getTypeName().toUpperCase().contains(MyTypes.HASHMAP.typeName)){
@@ -53,19 +57,18 @@ public class ValidateObjectsService {
         validateFilesInList(fieldValue, myField, parentFieldName);
     }
 
-    private void validateType(Object fieldValue, String fieldName, String type, String parentFieldName) {
-        String errorMessage = "Field '" + parentFieldName + "." + fieldName + "' is type '" +
+    private void validateType(Object fieldValue, String fieldType, MyField myField, String parentFieldName) {
+        String errorMessage = "Field '" + parentFieldName + "' is type '" +
                 fieldValue.getClass().getTypeName()
-                + "', but the type required is '" + type + "'";
+                + "', but the type required is '" + fieldType + "'";
 
-        if(MyTypes.NUMBER.typeName.equalsIgnoreCase(type)){
+        if(MyTypes.NUMBER.typeName.equalsIgnoreCase(fieldType)){
             Assert.isTrue(isNumberType(fieldValue.getClass()), errorMessage);
-        }else if(MyTypes.DATE.typeName.equalsIgnoreCase(type)){
+        }else if(MyTypes.DATE.typeName.equalsIgnoreCase(fieldType)){
             Assert.isTrue(fieldValue.getClass().isInstance(""), errorMessage + " that type is a String");
-            //TODO: passar o formato da data
-            validateDate(String.valueOf(fieldValue));
+            validateDate(String.valueOf(fieldValue), myField, parentFieldName);
         } else{
-            Assert.isTrue(fieldValue.getClass().getTypeName().toLowerCase().contains(type.toLowerCase()), errorMessage);
+            Assert.isTrue(fieldValue.getClass().getTypeName().toLowerCase().contains(fieldType.toLowerCase()), errorMessage);
         }
 
     }
@@ -83,13 +86,51 @@ public class ValidateObjectsService {
         }
     }
 
-    private void validateDate(String date) {
-        //TODO: validar a data de acordo com o seu formato
-        var zonedDateTime = ZonedDateTime.parse(date, DateTimeFormatter.ISO_DATE_TIME);
-        zonedDateTime.toLocalDate();
+    private void validateDate(String date, MyField myField, String parentFieldName) {
+
+        if(Strings.isEmpty(myField.getDateFormat())) {
+            boolean isValidDate = false;
+
+            if( canParseDate(date, "yyyy-MM") ||
+                canParseDate(date, "yyyy-MM-dd") ||
+                canParseDate(date, "yyyy-MM-dd HH:mm") ||
+                canParseDate(date, "yyyy-MM-dd HH:mm:ss")){
+                isValidDate = true;
+            }else{
+                try{
+                    ZonedDateTime.parse(date, DateTimeFormatter.ISO_DATE_TIME);
+                    isValidDate = true;
+                }catch (Exception ignored){}
+            }
+
+            Assert.isTrue(isValidDate, "The Field '" + parentFieldName + "' = '"
+                                + date + "' has error " + dateMessageErrorParser);
+
+        }else{
+
+            Assert.isTrue(canParseDate(date, myField.getDateFormat()), "The Field '" + parentFieldName + "' = '"
+                    + date + "' has error: " + dateMessageErrorParser);
+        }
+
     }
 
-    public static boolean isCollection(Object obj) {
+    private boolean canParseDate(String date, String dateFormat){
+        try{
+            org.joda.time.format.DateTimeFormatter fmt = org.joda.time.format.DateTimeFormat.forPattern(dateFormat);
+            org.joda.time.DateTime jodaDate =  fmt.parseDateTime(date);
+            jodaDate.toDate();
+
+            log.info("dateFormated: " + jodaDate.toString());
+            return true;
+
+        }catch (Exception e){
+            dateMessageErrorParser = e.getMessage() + " | " + e.getCause();
+        }
+
+        return false;
+    }
+
+    private static boolean isCollection(Object obj) {
         return obj.getClass().isArray() || obj instanceof Collection;
     }
 
