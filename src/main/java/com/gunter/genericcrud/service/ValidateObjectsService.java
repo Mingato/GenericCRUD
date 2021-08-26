@@ -23,21 +23,24 @@ public class ValidateObjectsService {
     public Map<String, Object> validateFields(MyObject myObject) {
         MyClass myClass = MyClassInstanced.getMyClassByName(myObject.getName());
 
-        validateFields(myObject.getMyInstance(), myClass.getFields(), myObject.getName());
+        Map<String, Object> myInstance = validateFields(myObject.getMyInstance(), myClass.getFields(), myObject.getName());
 
-        return myObject.getMyInstance();
+        return myInstance;
     }
 
-    private void validateFields(Map<String, Object> myObject, List<MyField> fields, String parentFieldName) {
-        //TODO: para cada objeto só adicionar os campos que estão em fields
+    private Map<String, Object> validateFields(Map<String, Object> myObject, List<MyField> fields, String parentFieldName) {
+        Map<String, Object> myInstance = new HashMap<>();
+
         if(fields != null) {
             fields.forEach(myField -> {
                 Object fieldValue = myObject.getOrDefault(myField.getName(), null);
 
                 validateFieldNotNull(fieldValue, myField, parentFieldName);
-                validateFieldType(fieldValue, myField.getName(), myField.getType(), myField, parentFieldName);
+                myInstance.put(myField.getName(), validateFieldType(fieldValue, myField.getName(), myField.getType(), myField, parentFieldName));
             });
         }
+
+        return myInstance;
     }
 
     private void validateFieldNotNull(Object fieldValue, MyField myField, String parentFieldName) {
@@ -46,15 +49,18 @@ public class ValidateObjectsService {
         }
     }
 
-    private void validateFieldType(Object fieldValue, String fieldName, String fieldType, MyField myField, String parentFieldName) {
+    private Object validateFieldType(Object fieldValue, String fieldName, String fieldType, MyField myField, String parentFieldName) {
+        Object fieldValueValidated = fieldValue;
         validateType(fieldValue, fieldType, myField, parentFieldName + "." + fieldName);
 
-        //validade HashMap Field
-        if(fieldValue.getClass().getTypeName().toUpperCase().contains(MyTypes.HASHMAP.typeName)){
-            validateFields((LinkedHashMap) fieldValue, myField.getFields(), parentFieldName+"."+fieldName);
+
+        if(fieldValue.getClass().getTypeName().toUpperCase().contains(MyTypes.HASHMAP.typeName)){//validade HashMap Field
+            fieldValueValidated = validateFields((LinkedHashMap) fieldValue, myField.getFields(), parentFieldName+"."+fieldName);
+        }else if(isCollection(fieldValue)) {//validade List Field
+            fieldValueValidated= validateFilesInList(fieldValue, myField, parentFieldName);
         }
 
-        validateFilesInList(fieldValue, myField, parentFieldName);
+        return fieldValueValidated;
     }
 
     private void validateType(Object fieldValue, String fieldType, MyField myField, String parentFieldName) {
@@ -73,17 +79,19 @@ public class ValidateObjectsService {
 
     }
 
-    private void validateFilesInList(Object fieldValue, MyField myField, String parentFieldName){
-        if(isCollection(fieldValue)) {
-
-            String listType = myField.getFieldTypeList().getType();
-            ArrayList list = (ArrayList) fieldValue;
-            int index = 0;
-            for(Object element: list) {
-                validateFieldType(element, myField.getName()+"[" + index + "]", listType, myField.getFieldTypeList(), parentFieldName);
-                index++;
-            }
+    private List<Object> validateFilesInList(Object fieldValue, MyField myField, String parentFieldName){
+        String listType = myField.getFieldTypeList().getType();
+        ArrayList listValidated = new ArrayList();
+        ArrayList list = (ArrayList) fieldValue;
+        
+        int index = 0;
+        for(Object element: list) {
+            listValidated.add(validateFieldType(element, myField.getName()+"[" + index + "]", listType, myField.getFieldTypeList(), parentFieldName));
+            index++;
         }
+
+        return listValidated;
+
     }
 
     private void validateDate(String date, MyField myField, String parentFieldName) {
@@ -130,7 +138,7 @@ public class ValidateObjectsService {
         return false;
     }
 
-    private static boolean isCollection(Object obj) {
+    private boolean isCollection(Object obj) {
         return obj.getClass().isArray() || obj instanceof Collection;
     }
 
