@@ -53,7 +53,7 @@ public class ValidateObjectsService {
 
 
         if(fieldValue.getClass().getTypeName().toUpperCase().contains(MyTypes.HASHMAP.typeName)){//validade HashMap Field
-            fieldValueValidated = validateFields((LinkedHashMap) fieldValue, myField.getFields(), parentFieldName+"."+fieldName);
+            fieldValueValidated = validateFields((Map<String, Object>) fieldValue, myField.getFields(), parentFieldName+"."+fieldName);
         }else if(isCollection(fieldValue)) {//validade List Field
             fieldValueValidated= validateFilesInList(fieldValue, myField, parentFieldName);
         }
@@ -89,7 +89,6 @@ public class ValidateObjectsService {
         }
 
         return listValidated;
-
     }
 
     private void validateDate(String date, MyField myField, String parentFieldName) {
