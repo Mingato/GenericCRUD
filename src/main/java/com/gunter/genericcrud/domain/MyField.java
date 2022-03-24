@@ -7,9 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Objects;
 
@@ -19,16 +16,10 @@ import java.util.Objects;
 @Document
 public class MyField {
 
-    @Valid
-    @NotBlank(message = "field 'name' can't be blank")
     private String name;
 
-    @Valid
-    @NotBlank(message = "field 'type' can't be blank")
     private String type;
 
-    @Valid
-    @NotNull(message = "field 'required' can1t be null")
     private boolean required = false;
 
     private String description = "";

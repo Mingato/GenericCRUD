@@ -15,3 +15,32 @@ Ao adicionar um novo objeto deixar em memória e no banco de dados.
 
 Observação: como os dados vão ser bem poucos, talvez gravar tudo em um arquivo para que não use um banco de dados para tão pouco
 
+
+AssetsServices
+
+		estrutura json
+			[
+				{
+					"id": "main",
+					"params" :[			
+						{ 
+							"id": "",
+							"key": "",
+							"value": ""
+						}
+					]
+				},
+				
+				{
+					"id": "chat",
+					"params" :[			
+						{ 
+							"id": "",
+							"key": "",
+							"value": ""
+						}
+					]
+				}
+			]
+		json público 
+		json privado q sera acessado com um token que sera passado nas parametrizacoes das aplicacoes
